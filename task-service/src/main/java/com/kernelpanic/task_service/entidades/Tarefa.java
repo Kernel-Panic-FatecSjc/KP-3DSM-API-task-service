@@ -33,7 +33,6 @@ public class Tarefa {
     @Column (name = "descricao", nullable = true, length = 1000)
     private String descricao;
 
-    @Id
     @Column (name = "idResponsavel", nullable = false)
     private Integer idResponsavel;
 
@@ -41,7 +40,6 @@ public class Tarefa {
     @Column (name = "status", nullable = false)
     private StatusTarefa statusTarefa;
 
-    @Id
     @Column (name = "idProjeto", nullable = false)
     private Integer idProjeto;
 

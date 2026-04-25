@@ -4,5 +4,7 @@ public enum StatusTarefa {
     TO_DO,
     IN_PROGRESS,
     IN_REVIEW,
-    DONE;
+    DONE,
+    BLOQUEADA,
+    DESATIVADA;
 }
