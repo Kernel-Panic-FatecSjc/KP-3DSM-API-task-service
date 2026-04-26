@@ -1,6 +1,9 @@
 package com.kernelpanic.task_service.dtos;
 
-import com.kernelpanic.task_service.entidades.StatusTarefa;
+import java.util.List;
+
+import com.kernelpanic.task_service.enums.StatusTarefa;
+
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +18,7 @@ public class TarefaAtualizarDTO {
     @Size(max = 1000, message = "A descrição não pode passar de 1000 caracteres")
     private String descricao;
 
-    private Integer idResponsavel;
+    private List<Integer> idResponsaveis;
 
     private Integer idProjeto;
 

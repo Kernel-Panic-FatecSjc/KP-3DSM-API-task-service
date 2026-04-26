@@ -1,0 +1,99 @@
+package com.kernelpanic.task_service.servicos;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kernelpanic.task_service.dtos.TarefaAtualizarDTO;
+import com.kernelpanic.task_service.dtos.TarefaCadastroDTO;
+import com.kernelpanic.task_service.dtos.TarefaExibirDTO;
+import com.kernelpanic.task_service.enums.StatusTarefa;
+import com.kernelpanic.task_service.entidades.Tarefa;
+import com.kernelpanic.task_service.excecoes.EntidadeNaoEncontradaException;
+import com.kernelpanic.task_service.repositorios.TarefaRepositorio;
+
+@Service
+public class TarefaService {
+    
+    @Autowired
+    private TarefaRepositorio repositorio;
+
+    public TarefaExibirDTO criar(TarefaCadastroDTO dto) {
+        Tarefa novaTarefa = new Tarefa();
+        novaTarefa.setNome(dto.getNome());
+        novaTarefa.setDescricao(dto.getDescricao());
+        novaTarefa.setIdResponsaveis(dto.getIdResponsaveis());
+        novaTarefa.setIdProjeto(dto.getIdProjeto());
+        novaTarefa.setStatusTarefa(dto.getStatusTarefa());
+        novaTarefa.setDataCriacao(new Timestamp(System.currentTimeMillis()));
+
+        Tarefa salva = repositorio.save(novaTarefa);
+        return converterParaDTO(salva);
+    }
+
+    public TarefaExibirDTO atualizar(Integer id, TarefaAtualizarDTO dto) {
+        Tarefa tarefa = repositorio.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                    "Tarefa Inexistente", 
+                    "Não foi possível atualizar. A tarefa de ID " + id + " não consta no banco de dados."
+                ));
+
+        if (dto.getNome() != null) tarefa.setNome(dto.getNome());
+        if (dto.getDescricao() != null) tarefa.setDescricao(dto.getDescricao());
+        if (dto.getIdResponsaveis() != null) tarefa.setIdResponsaveis(dto.getIdResponsaveis());
+        if (dto.getIdProjeto() != null) tarefa.setIdProjeto(dto.getIdProjeto());
+        if (dto.getStatusTarefa() != null) tarefa.setStatusTarefa(dto.getStatusTarefa());
+
+        Tarefa atualizada = repositorio.save(tarefa);
+        return converterParaDTO(atualizada);
+    }
+
+    public void deletar(Integer id) {
+        Tarefa tarefa = repositorio.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                    "Falha ao Deletar", 
+                    "A tarefa de ID " + id + " não foi encontrada."
+                ));
+        repositorio.delete(tarefa); 
+    }
+
+    public List<TarefaExibirDTO> listarTodas() {
+        List<Tarefa> tarefas = repositorio.findAll();
+        return tarefas.stream().map(this::converterParaDTO).collect(Collectors.toList());
+    }
+
+    public List<TarefaExibirDTO> buscarPorProjeto(Integer idProjeto) {
+        List<Tarefa> tarefas = repositorio.findByIdProjeto(idProjeto);
+        return tarefas.stream().map(this::converterParaDTO).collect(Collectors.toList());
+    }
+
+    public List<TarefaExibirDTO> buscarPorFuncionario(Integer idResponsavel) {
+        List<Tarefa> tarefas = repositorio.buscarPorResponsavelNaString(idResponsavel);
+        return tarefas.stream().map(this::converterParaDTO).collect(Collectors.toList());
+    }
+
+    public List<TarefaExibirDTO> buscarPorEstado(StatusTarefa status) {
+        List<Tarefa> tarefas = repositorio.findByStatusTarefa(status);
+        return tarefas.stream().map(this::converterParaDTO).collect(Collectors.toList());
+    }
+
+    public List<TarefaExibirDTO> buscarPorPeriodo(Timestamp inicio, Timestamp fim) {
+        List<Tarefa> tarefas = repositorio.findByDataCriacaoBetween(inicio, fim);
+        return tarefas.stream().map(this::converterParaDTO).collect(Collectors.toList());
+    }
+
+    private TarefaExibirDTO converterParaDTO(Tarefa tarefa) {
+        TarefaExibirDTO exibicao = new TarefaExibirDTO();
+        exibicao.setId(tarefa.getId());
+        exibicao.setNome(tarefa.getNome());
+        exibicao.setDescricao(tarefa.getDescricao());
+        exibicao.setStatus(tarefa.getStatusTarefa());
+        exibicao.setIdResponsaveis(tarefa.getIdResponsaveis());
+        exibicao.setIdProjeto(tarefa.getIdProjeto());
+        exibicao.setDataCriacao(tarefa.getDataCriacao());
+        return exibicao;
+    }
+}

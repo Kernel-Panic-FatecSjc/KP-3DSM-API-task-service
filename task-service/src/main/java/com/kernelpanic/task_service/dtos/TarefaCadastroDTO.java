@@ -1,6 +1,9 @@
 package com.kernelpanic.task_service.dtos;
 
-import com.kernelpanic.task_service.entidades.StatusTarefa;
+import java.util.List;
+
+import com.kernelpanic.task_service.enums.StatusTarefa;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,8 +21,8 @@ public class TarefaCadastroDTO {
     @Size(max = 1000, message = "A descrição não pode passar de 1000 caracteres")
     private String descricao;
 
-    @NotNull(message = "O ID do responsável é obrigatório")
-    private Integer idResponsavel;
+    @NotNull(message = "Os responsáveis são obrigatórios")
+    private List<Integer> idResponsaveis;
 
     @NotNull(message = "O ID do projeto é obrigatório")
     private Integer idProjeto;

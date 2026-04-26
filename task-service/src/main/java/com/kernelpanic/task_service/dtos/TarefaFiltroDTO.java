@@ -1,6 +1,9 @@
 package com.kernelpanic.task_service.dtos;
 
-import com.kernelpanic.task_service.entidades.StatusTarefa;
+import java.util.List;
+
+import com.kernelpanic.task_service.enums.StatusTarefa;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class TarefaFiltroDTO {
     private StatusTarefa statusTarefa;
     private Integer idProjeto;
-    private Integer idResponsavel;
+    private List<Integer> idResponsaveis;
 }

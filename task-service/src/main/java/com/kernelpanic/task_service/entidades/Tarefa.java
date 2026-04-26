@@ -1,8 +1,13 @@
 package com.kernelpanic.task_service.entidades;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
+import java.util.List;
+
+import com.kernelpanic.task_service.enums.StatusTarefa;
+import com.kernelpanic.task_service.modelo.ConverterTexto;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,8 +38,9 @@ public class Tarefa {
     @Column (name = "descricao", nullable = true, length = 1000)
     private String descricao;
 
-    @Column (name = "idResponsavel", nullable = false)
-    private Integer idResponsavel;
+    @Convert(converter = ConverterTexto.class)
+    @Column(name = "ids_responsaveis")
+    private List<Integer> idResponsaveis;
 
     @Enumerated(EnumType.STRING)
     @Column (name = "status", nullable = false)
@@ -45,4 +51,10 @@ public class Tarefa {
 
     @Column (name = "dataCriacao", nullable = false)
     private Timestamp dataCriacao;
+
+    @Column (name = "data_inicio_bloqueio")
+    private Timestamp dataInicioBloqueio;
+
+    @Column (name = "data_fim_bloqueio")
+    private Timestamp dataFimBloqueio;
 }

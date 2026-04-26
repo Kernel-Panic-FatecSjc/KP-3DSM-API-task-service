@@ -1,11 +1,13 @@
 package com.kernelpanic.task_service.dtos;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
+
+import com.kernelpanic.task_service.enums.StatusTarefa;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.kernelpanic.task_service.entidades.StatusTarefa;
 
 @Data
 @NoArgsConstructor
