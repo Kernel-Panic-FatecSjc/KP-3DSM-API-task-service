@@ -18,4 +18,9 @@ public interface TarefaRepositorio extends JpaRepository<Tarefa, Integer> {
 
     @Query(value = "SELECT * FROM tarefas WHERE FIND_IN_SET(:idFuncionario, ids_responsaveis) > 0", nativeQuery = true)
     List<Tarefa> buscarPorResponsavelNaString(@Param("idFuncionario") Integer idFuncionario);
+
+    @Query("""
+            SELECT t.idpProjeto, t.statusTarefa, COUNT(T) FROM Tarefa t GROUP BY t.idProjeto, t.statusTarefa
+    """)
+    List<Object[]> resumoPorProjeto();
 }
