@@ -56,7 +56,7 @@ public class BloquearTarefaService {
             throw new IllegalStateException("Tarefa já está bloqueada");
         }
 
-        // cria bloqueio
+     
         BloqueioTarefa bloqueio = new BloqueioTarefa();
         bloqueio.setTarefa(tarefa);
         bloqueio.setCategoriaImpedimento(categoria);
@@ -65,13 +65,13 @@ public class BloquearTarefaService {
 
         tarefaBloqueioRepositorio.save(bloqueio);
 
-        // atualiza tarefa
+       
         tarefa.setStatusTarefa(StatusTarefa.BLOCKED);
         tarefa.setDataInicioBloqueio(Timestamp.from(Instant.now()));
 
         tarefaRepositorio.save(tarefa);
 
-        // histórico
+        
         HistoricoTarefa historico = new HistoricoTarefa();
         historico.setTarefa(tarefa);
         historico.setUsuarioId(usuarioId);

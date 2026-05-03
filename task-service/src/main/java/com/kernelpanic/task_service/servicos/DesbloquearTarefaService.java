@@ -61,13 +61,13 @@ public class DesbloquearTarefaService {
 
         bloqueioRepositorio.save(bloqueio);
 
-        // atualiza tarefa
-        tarefa.setStatusTarefa(StatusTarefa.DOING); // (pode melhorar depois)
+        
+        tarefa.setStatusTarefa(StatusTarefa.DOING); 
         tarefa.setDataFimBloqueio(Timestamp.from(Instant.now()));
 
         tarefaRepositorio.save(tarefa);
 
-        // histórico
+        
         HistoricoTarefa historico = new HistoricoTarefa();
         historico.setTarefa(tarefa);
         historico.setUsuarioId(usuarioId);
