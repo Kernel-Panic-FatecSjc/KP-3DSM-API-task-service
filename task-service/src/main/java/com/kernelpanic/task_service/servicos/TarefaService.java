@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.kernelpanic.task_service.dtos.TarefaAtualizarDTO;
 import com.kernelpanic.task_service.dtos.TarefaCadastroDTO;
 import com.kernelpanic.task_service.dtos.TarefaExibirDTO;
+import com.kernelpanic.task_service.dtos.TarefaResponseDTO;
 import com.kernelpanic.task_service.enums.StatusTarefa;
 import com.kernelpanic.task_service.entidades.Tarefa;
 import com.kernelpanic.task_service.excecoes.EntidadeNaoEncontradaException;
@@ -60,10 +61,12 @@ public class TarefaService {
         repositorio.delete(tarefa); 
     }
 
-    public List<TarefaExibirDTO> listarTodas() {
-        List<Tarefa> tarefas = repositorio.findAll();
-        return tarefas.stream().map(this::converterParaDTO).collect(Collectors.toList());
-    }
+    public List<TarefaResponseDTO> listarTodas() {
+    return repositorio.findAll()
+        .stream()
+        .map(this::converter)
+        .toList();
+}
 
     public List<TarefaExibirDTO> buscarPorProjeto(Integer idProjeto) {
         List<Tarefa> tarefas = repositorio.findByIdProjeto(idProjeto);
@@ -96,4 +99,28 @@ public class TarefaService {
         exibicao.setDataCriacao(tarefa.getDataCriacao());
         return exibicao;
     }
+
+    private TarefaResponseDTO converter(Tarefa tarefa) {
+    TarefaResponseDTO dto = new TarefaResponseDTO();
+
+    dto.setId(tarefa.getId());
+    dto.setNome(tarefa.getNome());
+    dto.setDescricao(tarefa.getDescricao());
+    dto.setProjetoId(tarefa.getIdProjeto());
+    dto.setNomeProjeto("Projeto " + tarefa.getIdProjeto()); // temporário
+    dto.setDataCriacao(tarefa.getDataCriacao());
+    dto.setIdResponsaveis(tarefa.getIdResponsaveis());
+
+    
+    switch (tarefa.getStatusTarefa()) {
+        case TO_DO -> dto.setStatus("To Do");
+        case DOING -> dto.setStatus("Doing");
+        case DONE -> dto.setStatus("Done");
+        case BLOCKED -> dto.setStatus("Doing");
+    }
+
+    dto.setBloqueada(tarefa.getStatusTarefa() == StatusTarefa.BLOCKED);
+
+    return dto;
+}
 }

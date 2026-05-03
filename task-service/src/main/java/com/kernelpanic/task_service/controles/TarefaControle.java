@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.kernelpanic.task_service.dtos.TarefaAtualizarDTO;
 import com.kernelpanic.task_service.dtos.TarefaCadastroDTO;
 import com.kernelpanic.task_service.dtos.TarefaExibirDTO;
+import com.kernelpanic.task_service.dtos.TarefaResponseDTO;
 import com.kernelpanic.task_service.enums.StatusTarefa;
 import com.kernelpanic.task_service.servicos.TarefaService;
 
@@ -25,9 +26,9 @@ public class TarefaControle {
     @Autowired
     private TarefaService service;
 
-    @GetMapping
-    public ResponseEntity<List<TarefaExibirDTO>> listarTodas() {
-        return ResponseEntity.ok(service.listarTodas());
+   @GetMapping
+    public ResponseEntity<List<TarefaResponseDTO>> listarTodas() {
+    return ResponseEntity.ok(service.listarTodas());
     }
 
     @PostMapping
