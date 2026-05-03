@@ -1,12 +1,14 @@
 package com.kernelpanic.task_service.servicos;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kernelpanic.task_service.dtos.ResumoProjetoDTO;
 import com.kernelpanic.task_service.dtos.TarefaAtualizarDTO;
 import com.kernelpanic.task_service.dtos.TarefaCadastroDTO;
 import com.kernelpanic.task_service.dtos.TarefaExibirDTO;
@@ -15,6 +17,7 @@ import com.kernelpanic.task_service.enums.StatusTarefa;
 import com.kernelpanic.task_service.entidades.Tarefa;
 import com.kernelpanic.task_service.excecoes.EntidadeNaoEncontradaException;
 import com.kernelpanic.task_service.repositorios.TarefaRepositorio;
+import java.util.Map;
 
 @Service
 public class TarefaService {
@@ -123,4 +126,26 @@ public class TarefaService {
 
     return dto;
 }
+
+
+    public List<ResumoProjetoDTO> resumoPorProjeto(){
+        List<Object[]> dados = repositorio.resumoPorProjeto();
+        Map<Integer, Map<String, Long>> agrupado = new HashMap<>();
+
+        for (Object[] row: dados){
+            Integer projectId = (Integer) row[0];
+            StatusTarefa status = (StatusTarefa) row[1];
+            Long count = (Long) row[2];
+
+
+            agrupado
+                .computeIfAbsent(projectId, k -> new HashMap<>())
+                .put(status.name(), count);
+        }
+
+        return agrupado.entrySet().stream()
+            .map(entry -> new ResumoProjetoDTO(entry.getKey(), entry.getValue()))
+            .toList();
+
+    }
 }

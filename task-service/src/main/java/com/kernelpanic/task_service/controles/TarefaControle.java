@@ -73,5 +73,16 @@ public class TarefaControle {
         Timestamp dataFim = Timestamp.valueOf(fim);
         
         return ResponseEntity.ok(service.buscarPorPeriodo(dataInicio, dataFim));
+
+
+
+        
     }
-}
+
+    @GetMapping("/resumo-por-projeto")
+    public ResponseEntity<?> resumoPorProjeto() {
+        return ResponseEntity.ok(service.resumoPorProjeto());
+    }
+
+    
+    }
