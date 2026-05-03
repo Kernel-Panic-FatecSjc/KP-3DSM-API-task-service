@@ -1,7 +1,9 @@
 package com.kernelpanic.task_service.servicos;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,28 +31,32 @@ public class BloquearTarefaService {
     @Autowired
     private HistoricoTarefaRepositorio historicoRepositorio;
 
-
     @Transactional
     public void bloquearTarefa(Integer tarefaId, Integer usuarioId, String categoria, String descricao){
-        if(categoria == null || categoria.isBlank()){
-            throw new RuntimeException("Categoria é obrigatória");
 
+        if (usuarioId == null) {
+            throw new IllegalArgumentException("Usuário é obrigatório");
+        }
 
+        if (categoria == null || categoria.isBlank()) {
+            throw new IllegalArgumentException("Categoria é obrigatória");
         }
 
         Tarefa tarefa = tarefaRepositorio.findById(tarefaId)
-            .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
-        
-        if (tarefa.getStatusTarefa() == StatusTarefa.DONE){
-            throw new RuntimeException("Não é possível bloquear uma tarefa finalizada");
+            .orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
+
+        if (tarefa.getStatusTarefa() == StatusTarefa.DONE) {
+            throw new IllegalStateException("Não é possível bloquear uma tarefa finalizada");
         }
 
-        Optional<BloqueioTarefa> bloqueioAtivo = tarefaBloqueioRepositorio.findActiveBlock(tarefaId);
+        Optional<BloqueioTarefa> bloqueioAtivo =
+            tarefaBloqueioRepositorio.findActiveBlock(tarefaId);
 
-        if(bloqueioAtivo.isPresent()){
-            throw new RuntimeException("Tarefa já bloqueada");
+        if (bloqueioAtivo.isPresent()) {
+            throw new IllegalStateException("Tarefa já está bloqueada");
         }
 
+        // cria bloqueio
         BloqueioTarefa bloqueio = new BloqueioTarefa();
         bloqueio.setTarefa(tarefa);
         bloqueio.setCategoriaImpedimento(categoria);
@@ -59,13 +65,13 @@ public class BloquearTarefaService {
 
         tarefaBloqueioRepositorio.save(bloqueio);
 
-
+        // atualiza tarefa
         tarefa.setStatusTarefa(StatusTarefa.BLOCKED);
-        tarefa.setDataInicioBloqueio(new Timestamp(System.currentTimeMillis()));
+        tarefa.setDataInicioBloqueio(Timestamp.from(Instant.now()));
 
         tarefaRepositorio.save(tarefa);
 
-
+        // histórico
         HistoricoTarefa historico = new HistoricoTarefa();
         historico.setTarefa(tarefa);
         historico.setUsuarioId(usuarioId);
@@ -74,8 +80,5 @@ public class BloquearTarefaService {
         historico.setDataEvento(LocalDateTime.now());
 
         historicoRepositorio.save(historico);
-
-
-
     }
 }

@@ -2,7 +2,9 @@ package com.kernelpanic.task_service.servicos;
 
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,34 +35,39 @@ public class DesbloquearTarefaService {
     @Transactional
     public void desbloquearTarefa(Integer tarefaId, Integer usuarioId) {
 
-        Tarefa tarefa = tarefaRepositorio.findById(tarefaId)
-                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        if (usuarioId == null) {
+            throw new IllegalArgumentException("Usuário é obrigatório");
+        }
 
-        Optional<BloqueioTarefa> bloqueioOpt = bloqueioRepositorio.findActiveBlock(tarefaId);
+        Tarefa tarefa = tarefaRepositorio.findById(tarefaId)
+            .orElseThrow(() -> new NoSuchElementException("Tarefa não encontrada"));
+
+        Optional<BloqueioTarefa> bloqueioOpt =
+            bloqueioRepositorio.findActiveBlock(tarefaId);
 
         if (bloqueioOpt.isEmpty()) {
-            throw new RuntimeException("Tarefa não está bloqueada");
+            throw new IllegalStateException("Tarefa não está bloqueada");
         }
 
         BloqueioTarefa bloqueio = bloqueioOpt.get();
 
-       
         LocalDateTime agora = LocalDateTime.now();
         bloqueio.setDataFim(agora);
 
-   
-        long minutos = Duration.between(bloqueio.getDataInicio(), agora).toMinutes();
-        bloqueio.setTempoBloqueio((int) minutos);
+        long minutos =
+            Duration.between(bloqueio.getDataInicio(), agora).toMinutes();
+
+        bloqueio.setTempoBloqueio(Math.toIntExact(minutos));
 
         bloqueioRepositorio.save(bloqueio);
 
-        
-        tarefa.setStatusTarefa(StatusTarefa.DOING);
-        tarefa.setDataFimBloqueio(new Timestamp(System.currentTimeMillis()));
+        // atualiza tarefa
+        tarefa.setStatusTarefa(StatusTarefa.DOING); // (pode melhorar depois)
+        tarefa.setDataFimBloqueio(Timestamp.from(Instant.now()));
 
         tarefaRepositorio.save(tarefa);
 
-        
+        // histórico
         HistoricoTarefa historico = new HistoricoTarefa();
         historico.setTarefa(tarefa);
         historico.setUsuarioId(usuarioId);
