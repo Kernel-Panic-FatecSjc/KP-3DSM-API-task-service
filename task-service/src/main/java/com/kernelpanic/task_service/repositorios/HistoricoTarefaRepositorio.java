@@ -11,5 +11,6 @@ import com.kernelpanic.task_service.entidades.HistoricoTarefa;
 public interface HistoricoTarefaRepositorio extends JpaRepository<HistoricoTarefa, Long> {
 
     List<HistoricoTarefa> findByTarefaId(Long tarefaId);
+    List<HistoricoTarefa> findByTarefaIdOrderByDataEventoAsc(Integer tarefaId);
 
 }
