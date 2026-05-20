@@ -21,6 +21,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/tarefas/**").permitAll()
+                .requestMatchers("/historico/**").permitAll()
                 .anyRequest().authenticated()
             );
 

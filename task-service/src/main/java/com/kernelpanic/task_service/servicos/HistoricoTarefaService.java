@@ -15,10 +15,20 @@ public class HistoricoTarefaService {
     @Autowired
     private HistoricoTarefaRepositorio repositorio;
 
-    public List<HistoricoTarefaDTO> buscarPorTarefa(Long tarefaId) {
+    public List<HistoricoTarefaDTO> buscarTodos() {
 
         List<HistoricoTarefa> historicos =
-            repositorio.findByTarefaId(tarefaId);
+            repositorio.findAll();
+
+        return historicos.stream()
+            .map(this::converterDTO)
+            .toList();
+    }
+
+    public List<HistoricoTarefaDTO> buscarPorTarefa(Integer tarefaId) {
+
+        List<HistoricoTarefa> historicos =
+            repositorio.findByTarefaIdOrderByDataEventoAsc(tarefaId);
 
         return historicos.stream()
             .map(this::converterDTO)

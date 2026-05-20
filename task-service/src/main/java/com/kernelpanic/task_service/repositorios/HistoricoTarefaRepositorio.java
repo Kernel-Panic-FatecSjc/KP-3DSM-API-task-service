@@ -10,7 +10,7 @@ import com.kernelpanic.task_service.entidades.HistoricoTarefa;
 @Repository
 public interface HistoricoTarefaRepositorio extends JpaRepository<HistoricoTarefa, Long> {
 
-    List<HistoricoTarefa> findByTarefaId(Long tarefaId);
+    List<HistoricoTarefa> findByTarefaId(Integer tarefaId);
     List<HistoricoTarefa> findByTarefaIdOrderByDataEventoAsc(Integer tarefaId);
 
 }

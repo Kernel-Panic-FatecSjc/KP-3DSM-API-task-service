@@ -18,8 +18,13 @@ public class HistoricoTarefaControle {
 
     @GetMapping("/tarefa/{id}")
     public List<HistoricoTarefaDTO> buscarPorTarefa(
-            @PathVariable Long id) {
+            @PathVariable Integer id) {
 
         return service.buscarPorTarefa(id);
+    }
+
+    @GetMapping
+    public List<HistoricoTarefaDTO> buscarTodos() {
+        return service.buscarTodos();
     }
 }
