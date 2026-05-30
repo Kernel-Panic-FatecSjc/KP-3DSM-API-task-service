@@ -20,7 +20,7 @@ public interface TarefaRepositorio extends JpaRepository<Tarefa, Integer> {
     List<Tarefa> buscarPorResponsavelNaString(@Param("idFuncionario") Integer idFuncionario);
 
     @Query("""
-            SELECT t.idpProjeto, t.statusTarefa, COUNT(T) FROM Tarefa t GROUP BY t.idProjeto, t.statusTarefa
+            SELECT t.idProjeto, t.statusTarefa, COUNT(t) FROM Tarefa t GROUP BY t.idProjeto, t.statusTarefa
     """)
     List<Object[]> resumoPorProjeto();
 }
