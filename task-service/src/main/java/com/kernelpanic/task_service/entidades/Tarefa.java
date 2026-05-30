@@ -28,8 +28,8 @@ import lombok.NoArgsConstructor;
 public class Tarefa {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column (name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Integer id;
 
     @Column (name = "nome", nullable = false, length = 255)
