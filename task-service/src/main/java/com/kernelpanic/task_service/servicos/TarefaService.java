@@ -3,6 +3,7 @@ package com.kernelpanic.task_service.servicos;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class TarefaService {
     @Autowired
     private TarefaRepositorio repositorio;
 
+    @Autowired
+    private AuditoriaAlteracaoService auditoriaService;
+
     public TarefaExibirDTO criar(TarefaCadastroDTO dto) {
         Tarefa novaTarefa = new Tarefa();
         novaTarefa.setNome(dto.getNome());
@@ -45,6 +49,13 @@ public class TarefaService {
                     "Não foi possível atualizar. A tarefa de ID " + id + " não consta no banco de dados."
                 ));
 
+        // Capturar valores antigos antes da atualização
+        String nomeAntigo = tarefa.getNome();
+        String descricaoAntiga = tarefa.getDescricao();
+        String statusAntigo = tarefa.getStatusTarefa() != null ? tarefa.getStatusTarefa().name() : null;
+        String projetoAntigo = tarefa.getIdProjeto() != null ? tarefa.getIdProjeto().toString() : null;
+        String responsaveisAntigo = tarefa.getIdResponsaveis() != null ? tarefa.getIdResponsaveis().toString() : null;
+
         if (dto.getNome() != null) tarefa.setNome(dto.getNome());
         if (dto.getDescricao() != null) tarefa.setDescricao(dto.getDescricao());
         if (dto.getIdResponsaveis() != null) tarefa.setIdResponsaveis(dto.getIdResponsaveis());
@@ -52,6 +63,27 @@ public class TarefaService {
         if (dto.getStatusTarefa() != null) tarefa.setStatusTarefa(dto.getStatusTarefa());
 
         Tarefa atualizada = repositorio.save(tarefa);
+
+        // Registrar alterações na auditoria
+        Integer projetoId = tarefa.getIdProjeto();
+        String tarefaNome = tarefa.getNome();
+
+        if (dto.getNome() != null && !Objects.equals(dto.getNome(), nomeAntigo)) {
+            auditoriaService.registrarAlteracao(id, tarefaNome, "nome", nomeAntigo, dto.getNome(), null, null, projetoId, null);
+        }
+        if (dto.getDescricao() != null && !Objects.equals(dto.getDescricao(), descricaoAntiga)) {
+            auditoriaService.registrarAlteracao(id, tarefaNome, "descricao", descricaoAntiga, dto.getDescricao(), null, null, projetoId, null);
+        }
+        if (dto.getStatusTarefa() != null && !Objects.equals(dto.getStatusTarefa().name(), statusAntigo)) {
+            auditoriaService.registrarAlteracao(id, tarefaNome, "statusTarefa", statusAntigo, dto.getStatusTarefa().name(), null, null, projetoId, null);
+        }
+        if (dto.getIdProjeto() != null && !Objects.equals(dto.getIdProjeto().toString(), projetoAntigo)) {
+            auditoriaService.registrarAlteracao(id, tarefaNome, "idProjeto", projetoAntigo, dto.getIdProjeto().toString(), null, null, projetoId, null);
+        }
+        if (dto.getIdResponsaveis() != null && !Objects.equals(dto.getIdResponsaveis().toString(), responsaveisAntigo)) {
+            auditoriaService.registrarAlteracao(id, tarefaNome, "idResponsaveis", responsaveisAntigo, dto.getIdResponsaveis().toString(), null, null, projetoId, null);
+        }
+
         return converterParaDTO(atualizada);
     }
 
