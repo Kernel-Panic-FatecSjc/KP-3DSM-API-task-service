@@ -46,10 +46,10 @@ public class Tarefa {
     @Column (name = "status", nullable = false)
     private StatusTarefa statusTarefa;
 
-    @Column (name = "idProjeto", nullable = false)
+    @Column (name = "id_projeto", nullable = false)
     private Integer idProjeto;
 
-    @Column (name = "dataCriacao", nullable = false)
+    @Column (name = "data_criacao", nullable = false)
     private Timestamp dataCriacao;
 
     @Column (name = "data_inicio_bloqueio")

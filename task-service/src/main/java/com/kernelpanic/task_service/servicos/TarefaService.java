@@ -18,9 +18,12 @@ import com.kernelpanic.task_service.enums.StatusTarefa;
 import com.kernelpanic.task_service.entidades.Tarefa;
 import com.kernelpanic.task_service.excecoes.EntidadeNaoEncontradaException;
 import com.kernelpanic.task_service.repositorios.TarefaRepositorio;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Map;
 
 @Service
+@Transactional
 public class TarefaService {
     
     @Autowired

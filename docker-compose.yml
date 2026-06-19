@@ -26,7 +26,7 @@
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=fatec
       - SERVER_PORT=8085
-      - SPRING_SQL_INIT_MODE=never
+      - SPRING_SQL_INIT_MODE=always
     depends_on:
       db-task:
         condition: service_healthy
