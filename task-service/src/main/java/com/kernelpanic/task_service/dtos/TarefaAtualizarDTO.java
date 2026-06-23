@@ -23,4 +23,8 @@ public class TarefaAtualizarDTO {
     private Integer idProjeto;
 
     private StatusTarefa statusTarefa;
+
+    private Long usuarioId;
+
+    private String usuarioNome;
 }

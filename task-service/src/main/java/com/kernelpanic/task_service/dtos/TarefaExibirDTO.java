@@ -15,8 +15,9 @@ public class TarefaExibirDTO {
     private Integer id;
     private String nome;
     private String descricao;
-    private StatusTarefa status; 
+    private StatusTarefa status;
     private List<Integer> idResponsaveis;
     private Integer idProjeto;
     private Timestamp dataCriacao;
+    private boolean bloqueada;
 }

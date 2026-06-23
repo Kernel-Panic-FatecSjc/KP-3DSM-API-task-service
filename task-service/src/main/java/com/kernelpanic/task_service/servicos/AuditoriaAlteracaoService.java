@@ -23,7 +23,8 @@ public class AuditoriaAlteracaoService {
             String dataInicio,
             String dataFim,
             Integer projetoId,
-            String prioridade) {
+            String prioridade,
+            Long usuarioId) {
 
         LocalDateTime inicio = null;
         LocalDateTime fim = null;
@@ -40,7 +41,8 @@ public class AuditoriaAlteracaoService {
             inicio,
             fim,
             projetoId,
-            prioridade
+            prioridade,
+            usuarioId
         );
 
         return alteracoes.stream()

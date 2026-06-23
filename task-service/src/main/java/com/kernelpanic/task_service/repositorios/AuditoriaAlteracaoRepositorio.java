@@ -19,11 +19,13 @@ public interface AuditoriaAlteracaoRepositorio extends JpaRepository<AuditoriaAl
            "(:dataInicio IS NULL OR a.dataAlteracao >= :dataInicio) AND " +
            "(:dataFim IS NULL OR a.dataAlteracao <= :dataFim) AND " +
            "(:projetoId IS NULL OR a.projetoId = :projetoId) AND " +
-           "(:prioridade IS NULL OR a.prioridade = :prioridade) " +
+           "(:prioridade IS NULL OR a.prioridade = :prioridade) AND " +
+           "(:usuarioId IS NULL OR a.usuarioId = :usuarioId) " +
            "ORDER BY a.dataAlteracao DESC")
     List<AuditoriaAlteracao> findWithFilters(
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim,
             @Param("projetoId") Integer projetoId,
-            @Param("prioridade") String prioridade);
+            @Param("prioridade") String prioridade,
+            @Param("usuarioId") Long usuarioId);
 }

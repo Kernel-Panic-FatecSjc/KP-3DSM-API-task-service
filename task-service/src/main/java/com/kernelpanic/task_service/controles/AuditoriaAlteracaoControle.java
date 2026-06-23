@@ -25,13 +25,15 @@ public class AuditoriaAlteracaoControle {
             @RequestParam(required = false) String dataInicio,
             @RequestParam(required = false) String dataFim,
             @RequestParam(required = false) Integer projetoId,
-            @RequestParam(required = false) String prioridade) {
+            @RequestParam(required = false) String prioridade,
+            @RequestParam(required = false) Long usuarioId) {
 
         List<AuditoriaAlteracaoDTO> alteracoes = servico.buscarAlteracoes(
             dataInicio,
             dataFim,
             projetoId,
-            prioridade
+            prioridade,
+            usuarioId
         );
 
         return ResponseEntity.ok(alteracoes);

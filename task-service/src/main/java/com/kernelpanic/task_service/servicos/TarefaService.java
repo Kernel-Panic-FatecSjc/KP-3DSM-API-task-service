@@ -70,21 +70,23 @@ public class TarefaService {
         // Registrar alterações na auditoria
         Integer projetoId = tarefa.getIdProjeto();
         String tarefaNome = tarefa.getNome();
+        Long uid = dto.getUsuarioId();
+        String uNome = dto.getUsuarioNome();
 
         if (dto.getNome() != null && !Objects.equals(dto.getNome(), nomeAntigo)) {
-            auditoriaService.registrarAlteracao(id, tarefaNome, "nome", nomeAntigo, dto.getNome(), null, null, projetoId, null);
+            auditoriaService.registrarAlteracao(id, tarefaNome, "nome", nomeAntigo, dto.getNome(), uid, uNome, projetoId, null);
         }
         if (dto.getDescricao() != null && !Objects.equals(dto.getDescricao(), descricaoAntiga)) {
-            auditoriaService.registrarAlteracao(id, tarefaNome, "descricao", descricaoAntiga, dto.getDescricao(), null, null, projetoId, null);
+            auditoriaService.registrarAlteracao(id, tarefaNome, "descricao", descricaoAntiga, dto.getDescricao(), uid, uNome, projetoId, null);
         }
         if (dto.getStatusTarefa() != null && !Objects.equals(dto.getStatusTarefa().name(), statusAntigo)) {
-            auditoriaService.registrarAlteracao(id, tarefaNome, "statusTarefa", statusAntigo, dto.getStatusTarefa().name(), null, null, projetoId, null);
+            auditoriaService.registrarAlteracao(id, tarefaNome, "statusTarefa", statusAntigo, dto.getStatusTarefa().name(), uid, uNome, projetoId, null);
         }
         if (dto.getIdProjeto() != null && !Objects.equals(dto.getIdProjeto().toString(), projetoAntigo)) {
-            auditoriaService.registrarAlteracao(id, tarefaNome, "idProjeto", projetoAntigo, dto.getIdProjeto().toString(), null, null, projetoId, null);
+            auditoriaService.registrarAlteracao(id, tarefaNome, "idProjeto", projetoAntigo, dto.getIdProjeto().toString(), uid, uNome, projetoId, null);
         }
         if (dto.getIdResponsaveis() != null && !Objects.equals(dto.getIdResponsaveis().toString(), responsaveisAntigo)) {
-            auditoriaService.registrarAlteracao(id, tarefaNome, "idResponsaveis", responsaveisAntigo, dto.getIdResponsaveis().toString(), null, null, projetoId, null);
+            auditoriaService.registrarAlteracao(id, tarefaNome, "idResponsaveis", responsaveisAntigo, dto.getIdResponsaveis().toString(), uid, uNome, projetoId, null);
         }
 
         return converterParaDTO(atualizada);
@@ -135,6 +137,7 @@ public class TarefaService {
         exibicao.setIdResponsaveis(tarefa.getIdResponsaveis());
         exibicao.setIdProjeto(tarefa.getIdProjeto());
         exibicao.setDataCriacao(tarefa.getDataCriacao());
+        exibicao.setBloqueada(tarefa.getStatusTarefa() == StatusTarefa.BLOCKED);
         return exibicao;
     }
 

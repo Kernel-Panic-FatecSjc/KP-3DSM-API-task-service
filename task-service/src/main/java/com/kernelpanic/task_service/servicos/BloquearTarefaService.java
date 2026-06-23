@@ -31,6 +31,9 @@ public class BloquearTarefaService {
     @Autowired
     private HistoricoTarefaRepositorio historicoRepositorio;
 
+    @Autowired
+    private AuditoriaAlteracaoService auditoriaService;
+
     @Transactional
     public void bloquearTarefa(Integer tarefaId, Integer usuarioId, String categoria, String descricao){
 
@@ -80,5 +83,17 @@ public class BloquearTarefaService {
         historico.setDataEvento(LocalDateTime.now());
 
         historicoRepositorio.save(historico);
+
+        auditoriaService.registrarAlteracao(
+            tarefaId,
+            tarefa.getNome(),
+            "bloqueio",
+            "DOING",
+            "BLOCKED - " + categoria,
+            usuarioId.longValue(),
+            null,
+            tarefa.getIdProjeto(),
+            null
+        );
     }
 }

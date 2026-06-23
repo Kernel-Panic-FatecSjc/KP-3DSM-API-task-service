@@ -32,6 +32,9 @@ public class DesbloquearTarefaService {
     @Autowired
     private HistoricoTarefaRepositorio historicoRepositorio;
 
+    @Autowired
+    private AuditoriaAlteracaoService auditoriaService;
+
     @Transactional
     public void desbloquearTarefa(Integer tarefaId, Integer usuarioId) {
 
@@ -72,8 +75,21 @@ public class DesbloquearTarefaService {
         historico.setTarefa(tarefa);
         historico.setUsuarioId(usuarioId);
         historico.setBloqueio(bloqueio);
+        historico.setTempoBloqueio(Math.toIntExact(minutos));
         historico.setDataEvento(agora);
 
         historicoRepositorio.save(historico);
+
+        auditoriaService.registrarAlteracao(
+            tarefaId,
+            tarefa.getNome(),
+            "desbloqueio",
+            "BLOCKED",
+            "DOING",
+            usuarioId.longValue(),
+            null,
+            tarefa.getIdProjeto(),
+            null
+        );
     }
 }
